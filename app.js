@@ -1,5 +1,29 @@
 var inquirer = require('inquirer');
 var Cards = require('./cards.js');
+var fs = require("fs");
+
+
+// Writes to the basicCards.txt file
+var writeToBasicCards = function(data) {
+    fs.appendFile("basicCards.txt", "\r\n\r\n");
+    fs.appendFile("basicCards.txt", JSON.stringify(data), function(err) {
+        if (err) {
+            return console.log(err);
+        }
+        console.log("basicCards.txt was updated!");
+    });
+};
+
+// Writes to the clozeCards.txt file
+var writeToClozeCards = function(data) {
+    fs.appendFile("clozeCards.txt", "\r\n\r\n");
+    fs.appendFile("clozeCards.txt", JSON.stringify(data), function(err) {
+        if (err) {
+            return console.log(err);
+        }
+        console.log("clozeCards.txt was updated!");
+    });
+};
 
 // App starts by prompting user to select a choice
 var start = function () {
@@ -37,7 +61,7 @@ var  makeBasicCard = function () {
         }
     ]).then(function(answers) {
         var basicCard = new Cards.BasicCard(answers.question, answers.answer);
-        basicCardStack.push(basicCard);
+        writeToBasicCards(basicCard);
 
         // runs the  makeBasicCard function once more
         makeBasicCard();
@@ -59,7 +83,7 @@ var  makeClozeCard = function () {
         }
     ]).then(function(answers) {
         var clozeCard = new Cards.ClozeCard(answers.question, answers.answer);
-        clozeCardStack.push(clozeCard);
+        writeToClozeCards(clozeCard);
 
         // runs the  makeBasicCard function once more
         makeClozeCard();
