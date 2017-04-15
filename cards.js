@@ -39,5 +39,7 @@ ClozeCard.prototype.showClozeErrorMsg = function () {
 }
 
 // exporting card constructors
-module.exports = BasicCard;
-module.exports = ClozeCard;
+module.exports = {
+    BasicCard: BasicCard,
+    ClozeCard: ClozeCard
+};
