@@ -2,26 +2,28 @@ var inquirer = require('inquirer');
 var Cards = require('./cards.js');
 var fs = require("fs");
 
+var basicCardArr = [];
+var clozeCardArr = [];
 
 // Writes to the basicCards.txt file
 var writeToBasicCards = function(data) {
-    fs.appendFile("basicCards.txt", "\r\n\r\n");
+    fs.appendFile("basicCards.txt", "\r\n");
     fs.appendFile("basicCards.txt", JSON.stringify(data), function(err) {
         if (err) {
             return console.log(err);
         }
-        console.log("basicCards.txt was updated!");
+        // console.log("basicCards.txt was updated!");
     });
 };
 
 // Writes to the clozeCards.txt file
 var writeToClozeCards = function(data) {
-    fs.appendFile("clozeCards.txt", "\r\n\r\n");
+    fs.appendFile("clozeCards.txt", "\r\n");
     fs.appendFile("clozeCards.txt", JSON.stringify(data), function(err) {
         if (err) {
             return console.log(err);
         }
-        console.log("clozeCards.txt was updated!");
+        // console.log("clozeCards.txt was updated!");
     });
 };
 
@@ -61,14 +63,26 @@ var  makeBasicCard = function () {
         }
     ]).then(function(answers) {
         var basicCard = new Cards.BasicCard(answers.question, answers.answer);
-        writeToBasicCards(basicCard);
+        basicCardArr.push(basicCard);
 
-        // runs the  makeBasicCard function once more
-        makeBasicCard();
+        // prompts the user if they would like to make card again. if yes, run makeBasicCard().
+        // if not, go back to main menu.
+        inquirer.prompt({
+            name: "again",
+            type: "confirm",
+            message: "Would you like to make another card?"
+        }).then(function(answer) {
+            if (answer.again === true) {
+                // runs the  makeBasicCard function once more
+                makeBasicCard();
+            }
+            else {
+                start();
+            }
+        });
     });
 
 };
-
 
 var  makeClozeCard = function () {
 
@@ -83,10 +97,24 @@ var  makeClozeCard = function () {
         }
     ]).then(function(answers) {
         var clozeCard = new Cards.ClozeCard(answers.question, answers.answer);
-        writeToClozeCards(clozeCard);
+        clozeCardArr.push(clozeCard);
 
-        // runs the  makeBasicCard function once more
-        makeClozeCard();
+        // prompts the user if they would like to make card again. if yes, run makeClozeCard().
+        // if not, go back to main menu.
+        inquirer.prompt({
+            name: "again",
+            type: "confirm",
+            message: "Would you like to make another card?"
+        }).then(function(answer) {
+            if (answer.again === true) {
+                // runs the  makeClozeCard function once more
+                makeClozeCard();
+            }
+            else {
+                start();
+            }
+        });
+
     });
 
 };
