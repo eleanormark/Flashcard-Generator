@@ -7,7 +7,7 @@ var BasicCard = function(front, back) {
 };
 
 BasicCard.prototype.showAnswer = function() {
-    console.log('Answer: ' + this.back);
+    return this.back;
 };
 
 var ClozeCard = function(text, cloze) {

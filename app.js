@@ -5,8 +5,9 @@ var fs = require("fs");
 var basicCardArr = [];
 var clozeCardArr = [];
 
-var basicCardFileArr = [];
-var clozeCardFileArr = [];
+// ToDo: load cards from file to arrays.
+// var basicCardFileArr = [];
+// var clozeCardFileArr = [];
 
 
 Array.prototype.shuffle = function() {
@@ -21,21 +22,10 @@ Array.prototype.shuffle = function() {
     return this;
 }
 
-// Writes to the basicCards.txt file
-var writeToBasicCards = function(data) {
-    fs.appendFile("basicCards.txt", "\r\n");
-    fs.appendFile("basicCards.txt", JSON.stringify(data), function(err) {
-        if (err) {
-            return console.log(err);
-        }
-        // console.log("basicCards.txt was updated!");
-    });
-};
-
-// Writes to the clozeCards.txt file
-var writeToClozeCards = function(data) {
-    fs.appendFile("clozeCards.txt", "\r\n");
-    fs.appendFile("clozeCards.txt", JSON.stringify(data), function(err) {
+// Writes cards to file
+var writeToFile = function(data, file) {
+    fs.appendFile(file, "\r\n");
+    fs.appendFile(file, JSON.stringify(data), function(err) {
         if (err) {
             return console.log(err);
         }
@@ -52,7 +42,7 @@ var start = function () {
             name: "selection",
             message: "What would you like to do?",
             choices: ['Make Basic Flashcards', 'Make Cloze Flashcards',
-                      'Study Basic Flashcards', 'Study Cloze Flashcards', 'Save']
+                      'Study Basic Flashcards', 'Study Cloze Flashcards', 'Save and Quit']
         }
 
     ]).then(function (answers) {
@@ -60,7 +50,6 @@ var start = function () {
         getChoice(answers.selection);
 
     });
-
 };
 
 // Function for determining which command is executed
@@ -78,9 +67,9 @@ var getChoice = function(caseData) {
             break;
         case 'Study Cloze Flashcards':
             clozeCardArr.shuffle();
-            studyClozeFlashcards();
+            studyClozeFlashcards(clozeCardArr.length-1);
             break;
-        case 'Save':
+        case 'Save and Quit':
             saveCards();
             break;
         default:
@@ -88,6 +77,15 @@ var getChoice = function(caseData) {
             process.exit();
     }
 };
+
+var saveCards = function () {
+    if (basicCardArr.length) {
+        writeToFile(basicCardArr, "basicCards.txt");
+    }
+    if (clozeCardArr.length) {
+        writeToFile(clozeCardArr,"clozeCards.txt");
+    }
+}
 
 var  makeBasicCard = function () {
 
@@ -170,11 +168,34 @@ var studyBasicFlashcards = function (index) {
             if (answer.userInput.toLowerCase() === basicCardArr[index].back.toLowerCase()) {
                 console.log('CORRECT!');
             } else {
-                console.log('Incorrect, please try again.');
-                basicCardArr[index].showAnswer();
+                console.log('The correct answer is '+ basicCardArr[index].showAnswer() + '.');
             }
             index--;
             studyBasicFlashcards(index);
+        });
+
+    } else {
+        start();
+    }
+}
+
+var studyClozeFlashcards = function (index) {
+
+    if (index >= 0) {
+
+        inquirer.prompt({
+            name: "userInput",
+            type: "input",
+            message: clozeCardArr[index].front
+        }).then(function(answer) {
+            if (answer.userInput.toLowerCase() === clozeCardArr[index].back.toLowerCase()) {
+                console.log('CORRECT!');
+            } else {
+                console.log('Incorrect input.');
+                clozeCardArr[index].showAnswer();
+            }
+            index--;
+            studyClozeFlashcards(index);
         });
 
     } else {
