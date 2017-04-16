@@ -73,10 +73,12 @@ var getChoice = function(caseData) {
             makeClozeCard();
             break;
         case 'Study Basic Flashcards':
-            studyBasicCard();
+            basicCardArr.shuffle();
+            studyBasicFlashcards(basicCardArr.length-1);
             break;
         case 'Study Cloze Flashcards':
-            studyClozeCard();
+            clozeCardArr.shuffle();
+            studyClozeFlashcards();
             break;
         case 'Save':
             saveCards();
@@ -156,10 +158,28 @@ var  makeClozeCard = function () {
 
 };
 
-var studyBasicFlashcards = function () {
-    basicCardFileArr
+var studyBasicFlashcards = function (index) {
+
+    if (index >= 0) {
+
+        inquirer.prompt({
+            name: "userInput",
+            type: "input",
+            message: basicCardArr[index].front
+        }).then(function(answer) {
+            if (answer.userInput.toLowerCase() === basicCardArr[index].back.toLowerCase()) {
+                console.log('CORRECT!');
+            } else {
+                console.log('Incorrect, please try again.');
+                basicCardArr[index].showAnswer();
+            }
+            index--;
+            studyBasicFlashcards(index);
+        });
+
+    } else {
+        start();
+    }
 }
-
-
 
 start();
