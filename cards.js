@@ -2,8 +2,14 @@
 
 // constructor function for creating card objects
 var BasicCard = function(front, back) {
+
+    if (!(this instanceof BasicCard)) {
+        return new BasicCard(front, back);
+    }
+
     this.front = front;
     this.back = back;
+
 };
 
 BasicCard.prototype.showAnswer = function() {
@@ -11,8 +17,14 @@ BasicCard.prototype.showAnswer = function() {
 };
 
 var ClozeCard = function(text, cloze) {
+
+    if (!(this instanceof ClazeCard)) {
+        return new ClozeCard(text, cloze);
+    }
+
     this.text = text;    //full-text
     this.cloze = cloze;  //the cloze-deleted portion of the full-text
+
 };
 
 // returns the cloze-deleted portion of the text.
