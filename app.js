@@ -5,6 +5,22 @@ var fs = require("fs");
 var basicCardArr = [];
 var clozeCardArr = [];
 
+var basicCardFileArr = [];
+var clozeCardFileArr = [];
+
+
+Array.prototype.shuffle = function() {
+    var i = this.length, j, temp;
+    if ( i == 0 ) return this;
+    while ( --i ) {
+        j = Math.floor( Math.random() * ( i + 1 ) );
+        temp = this[i];
+        this[i] = this[j];
+        this[j] = temp;
+    }
+    return this;
+}
+
 // Writes to the basicCards.txt file
 var writeToBasicCards = function(data) {
     fs.appendFile("basicCards.txt", "\r\n");
@@ -35,19 +51,40 @@ var start = function () {
             type: "list",
             name: "selection",
             message: "What would you like to do?",
-            choices: ['Make Basic Flashcards', 'Make Cloze Flashcards']
+            choices: ['Make Basic Flashcards', 'Make Cloze Flashcards',
+                      'Study Basic Flashcards', 'Study Cloze Flashcards', 'Save']
         }
 
     ]).then(function (answers) {
-        // Use user feedback for... whatever!!
 
-        if (answers.selection === 'Make Basic Flashcards') {
-            makeBasicCard();
-        } else {
-            makeClozeCard();
-        }
+        getChoice(answers.selection);
+
     });
 
+};
+
+// Function for determining which command is executed
+var getChoice = function(caseData) {
+    switch (caseData) {
+        case 'Make Basic Flashcards':
+            makeBasicCard();
+            break;
+        case 'Make Cloze Flashcards':
+            makeClozeCard();
+            break;
+        case 'Study Basic Flashcards':
+            studyBasicCard();
+            break;
+        case 'Study Cloze Flashcards':
+            studyClozeCard();
+            break;
+        case 'Save':
+            saveCards();
+            break;
+        default:
+            console.log("Unknown Choice.");
+            process.exit();
+    }
 };
 
 var  makeBasicCard = function () {
@@ -70,7 +107,7 @@ var  makeBasicCard = function () {
         inquirer.prompt({
             name: "again",
             type: "confirm",
-            message: "Would you like to make another card?"
+            message: "Would you like to make another Basic Flashcard?"
         }).then(function(answer) {
             if (answer.again === true) {
                 // runs the  makeBasicCard function once more
@@ -104,7 +141,7 @@ var  makeClozeCard = function () {
         inquirer.prompt({
             name: "again",
             type: "confirm",
-            message: "Would you like to make another card?"
+            message: "Would you like to make another Cloze Flashcard?"
         }).then(function(answer) {
             if (answer.again === true) {
                 // runs the  makeClozeCard function once more
@@ -118,5 +155,11 @@ var  makeClozeCard = function () {
     });
 
 };
+
+var studyBasicFlashcards = function () {
+    basicCardFileArr
+}
+
+
 
 start();
