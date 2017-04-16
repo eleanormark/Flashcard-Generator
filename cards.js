@@ -22,19 +22,19 @@ ClozeCard.prototype.showClozeDeletedPortion = function () {
 // returns the partial text.
 ClozeCard.prototype.showPartialText = function () {
 
-    this.partialText = (this.text).replace(this.cloze, "______");
+    this.partialText = (this.text).replace(this.cloze, "________");
     return this.partialText;
 }
 
 // returns the full text.
-ClozeCard.prototype.showClozeFullText = function () {
+ClozeCard.prototype.showFullText = function () {
     return this.text;
 }
 
-// logs an error when the cloze deletion does not appear in the input text.
-ClozeCard.prototype.showClozeErrorMsg = function () {
+// logs an error when the cloze/deleted portion is not detected.
+ClozeCard.prototype.isClozeMsg = function () {
     if (this.text === this.partialText) {
-        console.log('The cloze deletion did not appear in the input text');
+        return "No cloze part was detected for the input statement"
     }
 }
 

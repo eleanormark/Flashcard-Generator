@@ -1,3 +1,5 @@
+'use strict';
+
 var inquirer = require('inquirer');
 var Cards = require('./cards.js');
 var fs = require("fs");
@@ -8,7 +10,6 @@ var clozeCardArr = [];
 // ToDo: load cards from file to arrays.
 // var basicCardFileArr = [];
 // var clozeCardFileArr = [];
-
 
 Array.prototype.shuffle = function() {
     var i = this.length, j, temp;
@@ -118,7 +119,6 @@ var  makeBasicCard = function () {
             }
         });
     });
-
 };
 
 var  makeClozeCard = function () {
@@ -127,10 +127,10 @@ var  makeClozeCard = function () {
     inquirer.prompt([
         {
             name: "question",
-            message: "Input Question."
+            message: "Input Statement."
         }, {
             name: "answer",
-            message: "Input Answer."
+            message: "Input cloze."
         }
     ]).then(function(answers) {
         var clozeCard = new Cards.ClozeCard(answers.question, answers.answer);
@@ -153,7 +153,6 @@ var  makeClozeCard = function () {
         });
 
     });
-
 };
 
 var studyBasicFlashcards = function (index) {
@@ -165,11 +164,12 @@ var studyBasicFlashcards = function (index) {
             type: "input",
             message: basicCardArr[index].front
         }).then(function(answer) {
-            if (answer.userInput.toLowerCase() === basicCardArr[index].back.toLowerCase()) {
+            if (answer.userInput.toLowerCase().trim() === basicCardArr[index].back.toLowerCase().trim()) {
                 console.log('CORRECT!');
             } else {
                 console.log('The correct answer is '+ basicCardArr[index].showAnswer() + '.');
             }
+
             index--;
             studyBasicFlashcards(index);
         });
@@ -186,14 +186,18 @@ var studyClozeFlashcards = function (index) {
         inquirer.prompt({
             name: "userInput",
             type: "input",
-            message: clozeCardArr[index].front
+            message: clozeCardArr[index].showPartialText()
         }).then(function(answer) {
-            if (answer.userInput.toLowerCase() === clozeCardArr[index].back.toLowerCase()) {
+
+            if (answer.userInput.toLowerCase().trim() === clozeCardArr[index].showClozeDeletedPortion().toLowerCase().trim()) {
                 console.log('CORRECT!');
             } else {
-                console.log('Incorrect input.');
-                clozeCardArr[index].showAnswer();
+
+                clozeCardArr[index].isClozeMsg();
+                console.log("Incorrect input");
             }
+
+            console.log('The full statement: '+ clozeCardArr[index].showFullText() + '.');
             index--;
             studyClozeFlashcards(index);
         });
