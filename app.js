@@ -193,7 +193,7 @@ var studyClozeFlashcards = function (index) {
                 console.log('CORRECT!');
             } else {
 
-                clozeCardArr[index].isClozeMsg();
+                console.log( clozeCardArr[index].isClozeMsg());
                 console.log("Incorrect input");
             }
 
